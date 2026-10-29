@@ -58,7 +58,8 @@ jobs:
           )
           {
             echo 'EXPERIMENTAL K95 BUILD — not an official Karabiner release.'
-            echo 'The package is not signed with an official Developer ID or notarized.'
+            echo 'No Apple development or Developer ID signing identity was provided; the package is not notarized.'
+            echo 'Upstream requires code signing for background services; this is not a confirmed usable installation.'
             echo 'Review docs/k95-gkeys-testing.md and the workflow test results before testing.'
             printf 'Source commit: %s\n' "$(git rev-parse HEAD)"
             printf 'Runner: %s\n' "$RUNNER_OS $RUNNER_ARCH"

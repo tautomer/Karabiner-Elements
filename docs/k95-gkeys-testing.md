@@ -4,8 +4,11 @@ This branch is based on Karabiner-Elements **v16.3.0**. It is an experimental
 self-build, not an official Karabiner release. The GitHub Actions workflow builds
 on a hosted Mac, runs the test suite, and uploads a DMG plus a SHA-256 checksum.
 No signing credentials are stored in the repository or used by the workflow.
-The resulting package is **not signed with the official Developer ID or
-notarized**. A green build does not prove macOS will allow it to run.
+The resulting package is **not signed with an Apple development or Developer ID
+identity and is not notarized**. Upstream states that code signing is required
+for Karabiner-Elements background services, so this artifact is for build and
+test verification, not a confirmed usable installation. A signing identity and
+a separate signed build may be necessary before on-device testing.
 
 ## What the patch does
 
