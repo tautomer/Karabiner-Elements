@@ -24,6 +24,18 @@ void run_manipulator_basic_test() {
   using namespace boost::ut;
   using namespace boost::ut::literals;
 
+  "Corsair K95 G keys match distinct from rules and any key_code"_test = [] {
+    namespace basic = krbn::manipulator::manipulators::basic;
+    auto g1 = nlohmann::json::object({{"key_code", "corsair_k95_g1"}}).get<krbn::momentary_switch_event>();
+    auto g2 = nlohmann::json::object({{"key_code", "corsair_k95_g2"}}).get<krbn::momentary_switch_event>();
+    basic::from_event_definition from_g1(nlohmann::json::object({{"key_code", "corsair_k95_g1"}}));
+    basic::from_event_definition from_any(nlohmann::json::object({{"any", "key_code"}}));
+    expect(basic::from_event_definition::test_event(krbn::event_queue::event(g1), from_g1));
+    expect(!basic::from_event_definition::test_event(krbn::event_queue::event(g2), from_g1));
+    expect(basic::from_event_definition::test_event(krbn::event_queue::event(g1), from_any));
+    expect(basic::from_event_definition::test_event(krbn::event_queue::event(g2), from_any));
+  };
+
   "manipulator.details.basic::from_event_definition"_test = [] {
     namespace basic = krbn::manipulator::manipulators::basic;
     //

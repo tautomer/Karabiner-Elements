@@ -366,6 +366,13 @@ public:
                               absolute_time_point time_stamp) {
     momentary_switch_event mse(usage_pair);
 
+    // K95 G keys are internal input-only events. If no rule maps one to a
+    // real output, ignore it without affecting virtual HID or key-repeat state.
+    if (momentary_switch_event_details::corsair_k95_g_key::target(
+            usage_pair.get_usage_page(), usage_pair.get_usage())) {
+      return;
+    }
+
     adjust_time_stamp(time_stamp,
                       event_type,
                       mse.modifier_flag());

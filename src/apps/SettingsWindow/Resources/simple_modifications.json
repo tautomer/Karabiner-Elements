@@ -3606,5 +3606,24 @@
                 "key_code": "illumination_increment"
             }
         ]
-    }
+    },
+    {"category": "Corsair K95 RGB G keys"},
+    {"not_to": true, "label": "Corsair K95 G1", "data": [{"key_code": "corsair_k95_g1"}]},
+    {"not_to": true, "label": "Corsair K95 G2", "data": [{"key_code": "corsair_k95_g2"}]},
+    {"not_to": true, "label": "Corsair K95 G3", "data": [{"key_code": "corsair_k95_g3"}]},
+    {"not_to": true, "label": "Corsair K95 G4", "data": [{"key_code": "corsair_k95_g4"}]},
+    {"not_to": true, "label": "Corsair K95 G5", "data": [{"key_code": "corsair_k95_g5"}]},
+    {"not_to": true, "label": "Corsair K95 G6", "data": [{"key_code": "corsair_k95_g6"}]},
+    {"not_to": true, "label": "Corsair K95 G7", "data": [{"key_code": "corsair_k95_g7"}]},
+    {"not_to": true, "label": "Corsair K95 G8", "data": [{"key_code": "corsair_k95_g8"}]},
+    {"not_to": true, "label": "Corsair K95 G9", "data": [{"key_code": "corsair_k95_g9"}]},
+    {"not_to": true, "label": "Corsair K95 G10", "data": [{"key_code": "corsair_k95_g10"}]},
+    {"not_to": true, "label": "Corsair K95 G11", "data": [{"key_code": "corsair_k95_g11"}]},
+    {"not_to": true, "label": "Corsair K95 G12", "data": [{"key_code": "corsair_k95_g12"}]},
+    {"not_to": true, "label": "Corsair K95 G13", "data": [{"key_code": "corsair_k95_g13"}]},
+    {"not_to": true, "label": "Corsair K95 G14", "data": [{"key_code": "corsair_k95_g14"}]},
+    {"not_to": true, "label": "Corsair K95 G15", "data": [{"key_code": "corsair_k95_g15"}]},
+    {"not_to": true, "label": "Corsair K95 G16", "data": [{"key_code": "corsair_k95_g16"}]},
+    {"not_to": true, "label": "Corsair K95 G17", "data": [{"key_code": "corsair_k95_g17"}]},
+    {"not_to": true, "label": "Corsair K95 G18", "data": [{"key_code": "corsair_k95_g18"}]}
 ]

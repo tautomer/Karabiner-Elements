@@ -3,6 +3,7 @@
 #include "momentary_switch_event_details/apple_vendor_keyboard_key_code.hpp"
 #include "momentary_switch_event_details/apple_vendor_top_case_key_code.hpp"
 #include "momentary_switch_event_details/consumer_key_code.hpp"
+#include "momentary_switch_event_details/corsair_k95_g_key.hpp"
 #include "momentary_switch_event_details/generic_desktop.hpp"
 #include "momentary_switch_event_details/key_code.hpp"
 #include "momentary_switch_event_details/pointing_button.hpp"
@@ -22,7 +23,8 @@ public:
            momentary_switch_event_details::apple_vendor_keyboard_key_code::target(usage_page, usage) ||
            momentary_switch_event_details::apple_vendor_top_case_key_code::target(usage_page, usage) ||
            momentary_switch_event_details::pointing_button::target(usage_page, usage) ||
-           momentary_switch_event_details::generic_desktop::target(usage_page, usage);
+           momentary_switch_event_details::generic_desktop::target(usage_page, usage) ||
+           momentary_switch_event_details::corsair_k95_g_key::target(usage_page, usage);
   }
 
   momentary_switch_event() {
@@ -180,7 +182,10 @@ inline void to_json(nlohmann::json& json, const momentary_switch_event& value) {
   auto usage_page = value.get_usage_pair().get_usage_page();
   auto usage = value.get_usage_pair().get_usage();
 
-  if (momentary_switch_event_details::key_code::target(usage_page, usage)) {
+  if (momentary_switch_event_details::corsair_k95_g_key::target(usage_page, usage)) {
+    json["key_code"] = momentary_switch_event_details::corsair_k95_g_key::make_name(usage);
+
+  } else if (momentary_switch_event_details::key_code::target(usage_page, usage)) {
     json["key_code"] = momentary_switch_event_details::key_code::make_name(usage);
 
   } else if (momentary_switch_event_details::consumer_key_code::target(usage_page, usage)) {

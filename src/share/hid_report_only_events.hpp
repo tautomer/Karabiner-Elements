@@ -1,5 +1,6 @@
 #pragma once
 
+#include "hid_report_only_events/corsair/k95.hpp"
 #include "hid_report_only_events/elecom/trackball.hpp"
 #include "hid_report_only_events/report_handler.hpp"
 #include "types/device_identifiers.hpp"
@@ -11,6 +12,13 @@ namespace krbn::hid_report_only_events {
 // independent of individual vendors and device families.
 [[nodiscard]] inline bool is_target_device(
     const device_identifiers& identifiers) noexcept {
+  if (identifiers.get_is_keyboard() &&
+      !identifiers.get_is_virtual_device() &&
+      corsair::k95::is_target_device(identifiers.get_vendor_id(),
+                                     identifiers.get_product_id())) {
+    return true;
+  }
+
   if (identifiers.get_is_pointing_device() &&
       elecom::trackball::is_target_device(identifiers.get_vendor_id(),
                                           identifiers.get_product_id())) {
@@ -23,6 +31,15 @@ namespace krbn::hid_report_only_events {
 [[nodiscard]] inline std::shared_ptr<report_handler> make_report_handler(
     const device_identifiers& identifiers,
     std::span<const uint8_t> report_descriptor) {
+  if (identifiers.get_is_keyboard() && !identifiers.get_is_virtual_device()) {
+    if (auto handler = corsair::k95::make_report_handler(
+            identifiers.get_vendor_id(),
+            identifiers.get_product_id(),
+            report_descriptor)) {
+      return handler;
+    }
+  }
+
   if (identifiers.get_is_pointing_device()) {
     if (auto handler = elecom::trackball::make_report_handler(
             identifiers.get_vendor_id(),

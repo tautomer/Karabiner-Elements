@@ -7,6 +7,32 @@ void run_momentary_switch_event_test() {
   using namespace boost::ut::literals;
   using namespace std::literals;
 
+  "Corsair K95 G-key names round-trip through key_code JSON"_test = [] {
+    namespace keys = krbn::momentary_switch_event_details::corsair_k95_g_key;
+    for (size_t i = 1; i <= 18; ++i) {
+      auto name = "corsair_k95_g" + std::to_string(i);
+      auto json = nlohmann::json::object({{"key_code", name}});
+      auto event = json.get<krbn::momentary_switch_event>();
+      expect(event.valid());
+      expect(krbn::momentary_switch_event::target(keys::usage_page,
+                                                 pqrs::hid::usage::value_t(static_cast<int32_t>(i))));
+      expect(event.get_usage_pair() == pqrs::hid::usage_pair(keys::usage_page,
+                                                            pqrs::hid::usage::value_t(static_cast<int32_t>(i))));
+      expect(nlohmann::json(event) == json);
+      expect(!event.pointing_button());
+      expect(!event.modifier_flag());
+    }
+    expect(!krbn::momentary_switch_event::target(keys::usage_page, pqrs::hid::usage::value_t(0)));
+    expect(!krbn::momentary_switch_event::target(keys::usage_page, pqrs::hid::usage::value_t(19)));
+    // The real vendor report's ffC0:0002 IOHID value must stay unknown: only the
+    // report decoder produces logical G keys on the internal page.
+    expect(!krbn::momentary_switch_event::target(pqrs::hid::usage_page::value_t(0xffc0),
+                                                 pqrs::hid::usage::value_t(2)));
+    expect(!keys::find_usage_pair("corsair_k95_g0"));
+    expect(!keys::find_usage_pair("corsair_k95_g19"));
+    expect(!keys::find_usage_pair("corsair_k95_g01"));
+  };
+
   "momentary_switch_event"_test = [] {
     //
     // usage_page::keyboard_or_keypad

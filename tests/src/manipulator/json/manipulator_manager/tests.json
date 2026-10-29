@@ -1,5 +1,13 @@
 [
     {
+        "description": "K95 G1 -> tab; ordinary key remains unchanged",
+        "rules": [
+            "json/manipulator_manager/rules/k95_g1_to_tab.json"
+        ],
+        "input_event_queue": "json/manipulator_manager/input_event_queue/k95_g1_to_tab.json",
+        "expected_event_queue": "json/manipulator_manager/expected_event_queue/k95_g1_to_tab.json"
+    },
+    {
         "description": "spacebar -> tab",
         "rules": [
             "json/manipulator_manager/rules/spacebar_to_tab.json"

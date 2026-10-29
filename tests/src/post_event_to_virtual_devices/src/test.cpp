@@ -21,6 +21,20 @@ int main() {
     helper = nullptr;
   };
 
+  "unmapped K95 G keys never reach virtual HID or change repeat state"_test = [] {
+    namespace post = krbn::manipulator::manipulators::post_event_to_virtual_devices;
+    namespace keys = krbn::momentary_switch_event_details::corsair_k95_g_key;
+    post::queue queue(std::make_shared<krbn::pressed_keys_manager>(),
+                      std::make_shared<krbn::keyboard_suppression>());
+    for (int32_t i = 1; i <= 18; ++i) {
+      auto usage = pqrs::hid::usage_pair(keys::usage_page, pqrs::hid::usage::value_t(i));
+      queue.emplace_back_key_event(usage, krbn::event_type::key_down, krbn::absolute_time_point(100));
+      queue.emplace_back_key_event(usage, krbn::event_type::key_up, krbn::absolute_time_point(200));
+      expect(queue.get_events().empty());
+      expect(!queue.get_keyboard_repeat_detector().is_repeating());
+    }
+  };
+
   "mouse_key_handler.count_converter"_test = [] {
     {
       krbn::manipulator::manipulators::post_event_to_virtual_devices::mouse_key_handler::count_converter count_converter(64);

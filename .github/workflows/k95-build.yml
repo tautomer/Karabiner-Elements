@@ -1,0 +1,74 @@
+name: Experimental K95 G-key build
+
+on:
+  push:
+    branches:
+      - k95-gkeys-v16.3.0
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 120
+    env:
+      # Follow the v16.3.0 upstream CI configuration. These are deliberately
+      # not real identities; never expose or upload a signing private key here.
+      PQRS_ORG_CODE_SIGN_IDENTITY: dummy
+      PQRS_ORG_INSTALLER_CODE_SIGN_IDENTITY: dummy
+
+    steps:
+      - name: Check out source and pinned submodules
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+          submodules: recursive
+
+      - name: Select Xcode 26
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.0.app
+          xcodebuild -version
+
+      - name: Install build dependency
+        run: brew install xcodegen
+
+      - name: Build package
+        run: make package
+
+      - name: Run upstream and K95 tests
+        run: ruby scripts/reduce-logs.rb 'make -C tests'
+
+      - name: Prepare artifact and checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          packages=(Karabiner-Elements-*.dmg)
+          if [ "${#packages[@]}" -ne 1 ]; then
+            printf 'Expected one DMG, found %s\n' "${#packages[@]}" >&2
+            exit 1
+          fi
+          mkdir -p k95-ci-artifact
+          cp "${packages[0]}" k95-ci-artifact/
+          (
+            cd k95-ci-artifact
+            shasum -a 256 ./*.dmg > SHA256SUMS
+          )
+          {
+            echo 'EXPERIMENTAL K95 BUILD — not an official Karabiner release.'
+            echo 'The package is not signed with an official Developer ID or notarized.'
+            echo 'Review docs/k95-gkeys-testing.md and the workflow test results before testing.'
+            printf 'Source commit: %s\n' "$(git rev-parse HEAD)"
+            printf 'Runner: %s\n' "$RUNNER_OS $RUNNER_ARCH"
+            xcodebuild -version
+          } > k95-ci-artifact/BUILD-INFO.txt
+
+      - name: Upload experimental package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Karabiner-Elements-16.3.0-K95-experimental
+          path: k95-ci-artifact/
+          if-no-files-found: error
+          retention-days: 14

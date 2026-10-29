@@ -1,0 +1,13 @@
+[
+    {
+        "type": "basic",
+        "from": {
+            "key_code": "corsair_k95_g1"
+        },
+        "to": [
+            {
+                "key_code": "tab"
+            }
+        ]
+    }
+]

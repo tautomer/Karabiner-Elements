@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../modifier_flag.hpp"
+#include "corsair_k95_g_key.hpp"
 #include <pqrs/osx/iokit_hid_value.hpp>
 
 namespace krbn::momentary_switch_event_details::key_code {
@@ -257,6 +258,9 @@ inline pqrs::hid::usage_pair make_usage_pair(const std::string& key,
   // Extra keys and aliases
   if (json.is_string()) {
     auto name = json.get<std::string>();
+    if (auto usage_pair = corsair_k95_g_key::find_usage_pair(name)) {
+      return *usage_pair;
+    }
     auto it = other_usage_page_map.find(name.c_str());
     if (it != std::end(other_usage_page_map)) {
       return it->second;

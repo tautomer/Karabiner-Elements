@@ -1,9 +1,38 @@
 #include "test.hpp"
+#include "hid_report_only_events/corsair/k95.hpp"
 #include <boost/ut.hpp>
 
 void run_event_queue_utility_test() {
   using namespace boost::ut;
   using namespace boost::ut::literals;
+
+  "K95 raw report values enter the event queue as distinct G-key events"_test = [] {
+    krbn::hid_report_only_events::corsair::k95::handler handler;
+    std::vector<uint8_t> report(64, 0);
+    report[0] = 3;
+    report[16] = 1;
+    auto values = handler.handle(3, report, krbn::absolute_time_point(1000));
+    report[16] = 0;
+    auto releases = handler.handle(3, report, krbn::absolute_time_point(2000));
+    values.insert(values.end(), releases.begin(), releases.end());
+    auto device_properties = krbn::device_properties::make_device_properties(krbn::device_id(1), nullptr);
+    auto entries = krbn::event_queue::utility::make_entries(device_properties, values, {});
+    expect(entries->size() == 2_u);
+    if (entries->size() != 2) return;
+    const auto& down = *((*entries)[0]);
+    const auto& up = *((*entries)[1]);
+    expect(down.get_event_type() == krbn::event_type::key_down);
+    expect(up.get_event_type() == krbn::event_type::key_up);
+    auto down_event = down.get_event().get_if<krbn::momentary_switch_event>();
+    auto up_event = up.get_event().get_if<krbn::momentary_switch_event>();
+    expect(down_event != nullptr);
+    expect(up_event != nullptr);
+    if (down_event && up_event) {
+      auto expected = nlohmann::json::object({{"key_code", "corsair_k95_g1"}});
+      expect(nlohmann::json(*down_event) == expected);
+      expect(nlohmann::json(*up_event) == expected);
+    }
+  };
 
   "utility::make_queue"_test = [] {
     std::vector<pqrs::osx::iokit_hid_value> hid_values;

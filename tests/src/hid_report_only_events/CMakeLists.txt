@@ -8,3 +8,8 @@ add_executable(
   karabiner_test
   src/elecom/trackball_test.cpp
 )
+
+add_executable(
+  karabiner_corsair_k95_test
+  src/corsair/k95_test.cpp
+)

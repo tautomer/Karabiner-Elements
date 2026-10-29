@@ -65,7 +65,8 @@ public:
 
           switch (*any_type) {
             case event_definition::any_type::key_code:
-              if (usage_page == pqrs::hid::usage_page::keyboard_or_keypad) {
+              if (usage_page == pqrs::hid::usage_page::keyboard_or_keypad ||
+                  momentary_switch_event_details::corsair_k95_g_key::target(usage_page, e->get_usage_pair().get_usage())) {
                 return true;
               }
               break;
